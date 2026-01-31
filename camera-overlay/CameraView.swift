@@ -189,6 +189,7 @@ struct CameraView: View {
                         .frame(width: geometry.size.width,
                                height: geometry.size.height)
                         .clipped()
+                        .scaleEffect(x: cameraManager.cameraPosition == .front ? -1 : 1, y: 1)
                 } else {
                     Color.black
                 }
