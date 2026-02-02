@@ -80,6 +80,9 @@ struct CameraView: View {
             Spacer()
             HStack(spacing: 8) {
                 overlayThumbnail
+                    .aspectRatio(9 / 16, contentMode: .fit)
+                    .frame(width: 72)
+                    .clipShape(RoundedRectangle(cornerRadius: 8))
                 if isOverlayOnCamera {
                     Slider(value: $overlayOpacity, in: 0...100, step: 1)
                         .frame(maxWidth: 80)
@@ -98,26 +101,24 @@ struct CameraView: View {
 
     @ViewBuilder
     private var overlayThumbnail: some View {
-        Group {
-            if overlayType == .image, let referenceImage {
-                Image(uiImage: referenceImage)
-                    .resizable()
-                    .scaledToFit()
-            } else if overlayType == .video, let referenceVideoURL {
-                OverlayVideoPlayerView(url: referenceVideoURL, isPlaying: true, aspectFit: true)
-            } else {
-                RoundedRectangle(cornerRadius: 8)
-                    .fill(Color.secondary.opacity(0.3))
-                    .overlay(
-                        Image(systemName: "photo.badge.plus")
-                            .font(.title2)
-                            .foregroundStyle(Color.secondary)
-                    )
-            }
+        if overlayType == .image, let referenceImage {
+            Image(uiImage: referenceImage)
+                .resizable()
+                .scaledToFit()
+        } else if overlayType == .video, let referenceVideoURL {
+            OverlayVideoPlayerView(
+                url: referenceVideoURL,
+                isPlaying: cameraManager.isRecording,
+                aspectFit: true)
+        } else {
+            RoundedRectangle(cornerRadius: 8)
+                .fill(Color.secondary.opacity(0.3))
+                .overlay(
+                    Image(systemName: "photo.badge.plus")
+                        .font(.title2)
+                        .foregroundStyle(Color.secondary)
+                )
         }
-        .aspectRatio(9 / 16, contentMode: .fit)
-        .frame(width: 72)
-        .clipShape(RoundedRectangle(cornerRadius: 8))
     }
 
     var bottomPanel: some View {
@@ -196,26 +197,28 @@ struct CameraView: View {
             }
             if isOverlayOnCamera && overlayOpacity > 0 {
                 overlayContent
+                    .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    .opacity(overlayOpacity / 100)
+                    .allowsHitTesting(false)
             }
         }
     }
 
     @ViewBuilder
     private var overlayContent: some View {
-        Group {
-            if overlayType == .image, let referenceImage {
-                Image(uiImage: referenceImage)
-                    .resizable()
-                    .scaledToFit()
-            } else if overlayType == .video, let referenceVideoURL {
-                OverlayVideoPlayerView(url: referenceVideoURL, isPlaying: cameraManager.isRecording, aspectFit: true)
-            } else {
-                EmptyView()
-            }
+        if overlayType == .image, let referenceImage {
+            Image(uiImage: referenceImage)
+                .resizable()
+                .scaledToFit()
+        } else if overlayType == .video, let referenceVideoURL {
+            OverlayVideoPlayerView(
+                url: referenceVideoURL,
+                isPlaying: cameraManager.isRecording,
+                aspectFit: true
+            )
+        } else {
+            EmptyView()
         }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .opacity(overlayOpacity / 100)
-        .allowsHitTesting(false)
     }
 
     var captureButton: some View {
