@@ -18,6 +18,7 @@ struct OverlayVideoPlayerView: View {
                 .ignoresSafeArea()
         } else {
             VideoThumbnailView(url: url)
+                .id(url)
                 .ignoresSafeArea()
         }
     }

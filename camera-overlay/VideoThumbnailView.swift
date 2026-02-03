@@ -30,7 +30,7 @@ struct VideoThumbnailView: View {
         let asset = AVAsset(url: url)
         let generator = AVAssetImageGenerator(asset: asset)
         generator.appliesPreferredTrackTransform = true
-        generator.maximumSize = CGSize(width: 112, height: 112)
+        generator.maximumSize = CGSize(width: 400, height: 400)
         do {
             let cgImage = try generator.copyCGImage(at: .zero, actualTime: nil)
             return UIImage(cgImage: cgImage)
